@@ -67,31 +67,51 @@ function postRequest(data, signal) {
   });
 }
 
-// Function to stream the response from the server
+//// Function to stream the response from the server
+//async function getResponse(response, callback) {
+//  const reader = response.body.getReader();
+//  let partialLine = '';
+//
+//  while (true) {
+//    const { done, value } = await reader.read();
+//    if (done) {
+//      break;
+//    }
+//    // Decode the received value and split by lines
+//    const textChunk = new TextDecoder().decode(value);
+//    const lines = (partialLine + textChunk).split('\n');
+//    partialLine = lines.pop(); // The last line might be incomplete
+//
+//    for (const line of lines) {
+//      if (line.trim() === '') continue;
+//      const parsedResponse = JSON.parse(line);
+//      callback(parsedResponse); // Process each response word
+//    }
+//  }
+//
+//  // Handle any remaining line
+//  if (partialLine.trim() !== '') {
+//    const parsedResponse = JSON.parse(partialLine);
+//    callback(parsedResponse);
+//  }
+//}
+
 async function getResponse(response, callback) {
   const reader = response.body.getReader();
-  let partialLine = '';
+  let chunks = [];
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) {
       break;
     }
-    // Decode the received value and split by lines
-    const textChunk = new TextDecoder().decode(value);
-    const lines = (partialLine + textChunk).split('\n');
-    partialLine = lines.pop(); // The last line might be incomplete
-
-    for (const line of lines) {
-      if (line.trim() === '') continue;
-      const parsedResponse = JSON.parse(line);
-      callback(parsedResponse); // Process each response word
-    }
+    chunks.push(value);
   }
 
-  // Handle any remaining line
-  if (partialLine.trim() !== '') {
-    const parsedResponse = JSON.parse(partialLine);
-    callback(parsedResponse);
-  }
+  // Combine all chunks and decode
+  const combinedChunks = new Uint8Array(chunks.reduce((acc, val) => acc.concat(Array.from(val)), []));
+  const text = new TextDecoder().decode(combinedChunks);
+  const parsedResponse = JSON.parse(text);
+
+  callback(parsedResponse); // Process the entire JSON payload
 }

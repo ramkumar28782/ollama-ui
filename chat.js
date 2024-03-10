@@ -178,7 +178,7 @@ async function submitRequest() {
   let interrupt = new AbortController();
   let stopButton = document.createElement('button');
   stopButton.className = 'btn btn-danger';
-  stopButton.innerHTML = '<i class="fa fa-stop"></i>';
+  stopButton.innerHTML = '<i class="fa fa-stop me-2"></i>';
   stopButton.onclick = (e) => {
     e.preventDefault();
     interrupt.abort('Stop button pressed');
