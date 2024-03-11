@@ -2,6 +2,8 @@
 
 Just a simple HTML UI for Ollama
 
+[AskWells.mov](wfargo%2FAskWells.mov)
+
 ## Usage
 
 ```

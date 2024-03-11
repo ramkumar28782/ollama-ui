@@ -67,37 +67,8 @@ function postRequest(data, signal) {
   });
 }
 
-//// Function to stream the response from the server
-//async function getResponse(response, callback) {
-//  const reader = response.body.getReader();
-//  let partialLine = '';
-//
-//  while (true) {
-//    const { done, value } = await reader.read();
-//    if (done) {
-//      break;
-//    }
-//    // Decode the received value and split by lines
-//    const textChunk = new TextDecoder().decode(value);
-//    const lines = (partialLine + textChunk).split('\n');
-//    partialLine = lines.pop(); // The last line might be incomplete
-//
-//    for (const line of lines) {
-//      if (line.trim() === '') continue;
-//      const parsedResponse = JSON.parse(line);
-//      callback(parsedResponse); // Process each response word
-//    }
-//  }
-//
-//  // Handle any remaining line
-//  if (partialLine.trim() !== '') {
-//    const parsedResponse = JSON.parse(partialLine);
-//    callback(parsedResponse);
-//  }
-//}
-
 async function getResponse(response, callback) {
-  const reader = response.body.getReader();
+ const reader = response.body.getReader();
   let chunks = [];
 
   while (true) {
@@ -108,10 +79,27 @@ async function getResponse(response, callback) {
     chunks.push(value);
   }
 
-  // Combine all chunks and decode
-  const combinedChunks = new Uint8Array(chunks.reduce((acc, val) => acc.concat(Array.from(val)), []));
-  const text = new TextDecoder().decode(combinedChunks);
-  const parsedResponse = JSON.parse(text);
+    const combinedChunks = new Uint8Array(chunks.reduce((acc, val) => acc.concat(Array.from(val)), []));
+    const text = new TextDecoder().decode(combinedChunks);
+    const parsedResponse = JSON.parse(text);
+    let citationsDiv = document.createElement('div');
+    citationsDiv.className = 'citations-container';
 
-  callback(parsedResponse); // Process the entire JSON payload
+    // Additionally, process and display citation content from the `source_documents` array
+    if (parsedResponse.source_documents && parsedResponse.source_documents.length > 0) {
+      console.log("Citations:", parsedResponse);
+      parsedResponse.source_documents.forEach((doc, index) => {
+            console.log("Citations:", doc);
+            console.log("parsedResponse:", parsedResponse);
+
+        let citation = document.createElement('div'); // Fixed variable name to `citation` for clarity
+        citation.className = 'citation mb-2';
+//        citation.innerHTML = `<div><strong>Citation ${index + 1}:</strong><details class="show-hide-content-wrapper first-show-hide"> ${doc.source}<br>${doc.content}</details></div>`;
+        citation.innerHTML = `<details class="show-hide-content-wrapper" data-cid="tcm:182-294717-16" data-ctid="tcm:91-244416-32"><summary class="show-hide-content-title" aria-expanded="false"><span class="show-hide-title-text"><span class="hidden"><strong>Citation ${index + 1}:</strong></span></span></summary><div class="show-hide-content-text-wrapper-collapsible"><div><div class="link-list-desc" data-cid="tcm:84-294709-16" data-ctid="tcm:91-226307-32"><ul><li><strong>Source: ${doc.source}</source> </li><li>${doc.content}</li></ul></div></div></div></details>`;
+        parsedResponse.response += citation.innerHTML;
+        citationsDiv.appendChild(citation); // Make sure to append `citation`, not `parsedCitations`
+      });
+    }
+  // Assuming the callback is designed to handle the full JSON response:
+  callback(parsedResponse);
 }

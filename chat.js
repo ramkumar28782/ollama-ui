@@ -169,7 +169,7 @@ async function submitRequest() {
   responseDiv.className = 'response-message mb-2 text-start';
   responseDiv.style.minHeight = '3em'; // make sure div does not shrink if we cancel the request when no text has been generated yet
   spinner = document.createElement('div');
-  spinner.className = 'spinner-border text-light';
+  spinner.className = 'spinner-border text-dark';
   spinner.setAttribute('role', 'status');
   responseDiv.appendChild(spinner);
   chatHistory.appendChild(responseDiv);
@@ -196,6 +196,7 @@ async function submitRequest() {
         let word = parsedResponse.response;
         if (parsedResponse.done) {
           chatHistory.context = parsedResponse.context;
+
           // Copy button
           let copyButton = document.createElement('button');
           copyButton.className = 'btn btn-secondary copy-button';
