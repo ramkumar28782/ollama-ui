@@ -124,7 +124,7 @@
             var formData = new FormData();
             formData.append('document', input.files[0]);
       
-            fetch('http://127.0.0.1:7000/api/ingest', {
+            fetch('https://langchain-python-rag.azurewebsites.net/api/ingest', {
               method: 'POST'
             //   body: formData,
             })
