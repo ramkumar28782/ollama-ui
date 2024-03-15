@@ -1,0 +1,37 @@
+.bottomAd {
+  background-color: #f3f3f3;
+}
+
+.padding-bottom-15 {
+  padding-bottom: 15px;
+}
+
+.adMainMessage p {
+  padding: 7px 0;
+}
+
+.adImage img {
+  float: right;
+}
+
+.adLink {
+  margin-bottom: 8px;
+}
+
+.adLink a {
+  text-decoration: none;
+}
+
+.adSmallText {
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.cmsContainer {
+  max-width: 500px;
+}
+
+.container {
+  margin-left: 0;
+}
+
